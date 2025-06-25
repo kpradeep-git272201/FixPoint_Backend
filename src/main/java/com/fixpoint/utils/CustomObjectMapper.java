@@ -1,4 +1,4 @@
-package com.fixpoint.module.user.utils;
+package com.fixpoint.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;

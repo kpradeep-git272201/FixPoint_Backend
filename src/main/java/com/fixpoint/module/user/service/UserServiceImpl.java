@@ -4,7 +4,7 @@ import com.fixpoint.module.user.dto.UserDto;
 import com.fixpoint.module.user.entity.User;
 import com.fixpoint.module.user.exceptions.ResouceNotFoundException;
 import com.fixpoint.module.user.repository.UserRepository;
-import com.fixpoint.module.user.utils.CustomObjectMapper;
+import com.fixpoint.utils.CustomObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
