@@ -1,6 +1,7 @@
 package com.fixpoint.module.tracker.controller;
 
 import com.fixpoint.module.tracker.dtos.IssueDTO;
+import com.fixpoint.module.tracker.dtos.IssueResponseDTO;
 import com.fixpoint.module.tracker.entity.Issue;
 import com.fixpoint.module.tracker.service.IssueService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -24,13 +26,19 @@ public class IssueController {
     ) {
         issueDTO.setAttachment(attachment);
 
-        IssueDTO created = issueService.createIssue(issueDTO);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+        boolean issue = issueService.createIssue(issueDTO);
+        if(issue){
+            return new ResponseEntity<>("Issue added successfully!", HttpStatus.CREATED);
+        }else{
+            return new ResponseEntity<>("Issue creation failed!", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+
     }
 
     @GetMapping
-    public ResponseEntity<List<Issue>> getAllIssues() {
-        List<Issue> list = issueService.getAllIssues();
+    public ResponseEntity<List<IssueResponseDTO>> getAllIssues() {
+        List<IssueResponseDTO> list = issueService.getAllIssues();
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 

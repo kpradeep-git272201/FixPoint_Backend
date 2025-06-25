@@ -1,6 +1,7 @@
 package com.fixpoint.module.tracker.service;
 
 import com.fixpoint.module.tracker.dtos.IssueDTO;
+import com.fixpoint.module.tracker.dtos.IssueResponseDTO;
 import com.fixpoint.module.tracker.entity.Issue;
 import com.fixpoint.module.tracker.repository.IssueRepository;
 import com.fixpoint.module.user.exceptions.ResouceNotFoundException;
@@ -11,8 +12,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class IssueServiceImpl implements  IssueService{
@@ -22,10 +25,7 @@ public class IssueServiceImpl implements  IssueService{
     @Autowired
     private IssueRepository issueRepository;
     @Override
-    public IssueDTO createIssue(IssueDTO issueDTO) {
-        System.out.println("Title = " + issueDTO.getTitle());
-        System.out.println("Description = " + issueDTO.getDescription());
-
+    public boolean createIssue(IssueDTO issueDTO) {
         Issue entity = Issue.builder()
                 .projectCode(issueDTO.getProjectCode())
                 .title(issueDTO.getTitle())
@@ -35,6 +35,8 @@ public class IssueServiceImpl implements  IssueService{
                 .type(issueDTO.getType())
                 .startDate(issueDTO.getStartDate())
                 .endDate(issueDTO.getEndDate())
+                .updatedDate((issueDTO.getUpdatedDate()))
+                .updatedBy(issueDTO.getUpdatedBy())
                 .description(issueDTO.getDescription())
                 .remarks(issueDTO.getRemarks())
                 .createdBy(issueDTO.getCreatedBy())
@@ -51,7 +53,11 @@ public class IssueServiceImpl implements  IssueService{
         }
 
         Issue saved = issueRepository.save(entity);
-        return objectMapper.convert(saved, IssueDTO.class);
+        if(!(saved == null)){
+            return true;
+        }
+        return false;
+
     }
 
     @Override
@@ -124,10 +130,32 @@ public class IssueServiceImpl implements  IssueService{
     }
 
     @Override
-    public List<Issue> getAllIssues() {
-
+    public List<IssueResponseDTO> getAllIssues() {
         List<Issue> issues = this.issueRepository.findAll();
-        return issues;
-//        return Arrays.asList(objectMapper.convert(issues, IssueDTO[].class));
+        return issues.stream().map(issue -> {
+            String base64Attachment = null;
+            if (issue.getAttachment() != null && issue.getAttachment().length > 0) {
+                base64Attachment = Base64.getEncoder().encodeToString(issue.getAttachment());
+            }
+            return IssueResponseDTO.builder()
+                    .id(issue.getId())
+                    .assignTo(issue.getAssignTo())
+                    .createdBy(issue.getCreatedBy())
+                    .createdDate(issue.getCreatedDate())
+                    .description(issue.getDescription())
+                    .endDate(issue.getEndDate())
+                    .projectCode(issue.getProjectCode())
+                    .remarks(issue.getRemarks())
+                    .requester(issue.getRequester())
+                    .startDate(issue.getStartDate())
+                    .status(issue.getStatus())
+                    .title(issue.getTitle())
+                    .type(issue.getType())
+                    .updatedBy(issue.getUpdatedBy())
+                    .updatedDate(issue.getUpdatedDate())
+                    .attachmentBase64(base64Attachment)
+                    .build();
+        }).collect(Collectors.toList());
     }
+
 }

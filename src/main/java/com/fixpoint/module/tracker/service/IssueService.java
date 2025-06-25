@@ -1,12 +1,13 @@
 package com.fixpoint.module.tracker.service;
 
 import com.fixpoint.module.tracker.dtos.IssueDTO;
+import com.fixpoint.module.tracker.dtos.IssueResponseDTO;
 import com.fixpoint.module.tracker.entity.Issue;
 
 import java.util.List;
 
 public interface IssueService {
-    IssueDTO createIssue(IssueDTO issueDTO);
+    boolean createIssue(IssueDTO issueDTO);
 
     IssueDTO getIssueById(Long id);
 
@@ -14,5 +15,5 @@ public interface IssueService {
 
     boolean deleteIssue(Long id);
 
-    List<Issue> getAllIssues();
+    List<IssueResponseDTO> getAllIssues();
 }
