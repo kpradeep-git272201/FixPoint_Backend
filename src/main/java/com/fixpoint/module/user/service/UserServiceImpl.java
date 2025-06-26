@@ -1,16 +1,18 @@
 package com.fixpoint.module.user.service;
 
+import com.fixpoint.exceptions.DuplicateEmailException;
 import com.fixpoint.module.user.dto.UserDto;
 import com.fixpoint.module.user.entity.User;
 import com.fixpoint.module.user.exceptions.ResouceNotFoundException;
 import com.fixpoint.module.user.repository.UserRepository;
 import com.fixpoint.utils.CustomObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -19,10 +21,17 @@ public class UserServiceImpl implements UserService{
     @Autowired
     private UserRepository repository;
     @Override
-    public UserDto addUser(UserDto userDto) {
-        User user = objectMapper.convert(userDto, User.class);
-        User saveUser = this.repository.save(user);
-        return objectMapper.convert(saveUser, UserDto.class);
+    public ResponseEntity<Object> addUser(UserDto userDto) {
+        try {
+            User user = objectMapper.convert(userDto, User.class);
+            User saveUser = this.repository.save(user);
+            UserDto convert = objectMapper.convert(saveUser, UserDto.class);
+            return new ResponseEntity<>(convert, HttpStatus.CREATED);
+        } catch (DataIntegrityViolationException e) {
+            Map<Object, Object> body = new HashMap<>();
+            body.put("message", "Email '" + userDto.getEmail() + "' already exists");
+            return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+        }
     }
 
     @Override

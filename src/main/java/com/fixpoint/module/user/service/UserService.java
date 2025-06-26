@@ -2,11 +2,12 @@ package com.fixpoint.module.user.service;
 
 import com.fixpoint.module.user.dto.UserDto;
 import com.fixpoint.module.user.entity.User;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface UserService {
-    UserDto addUser(UserDto userDto);
+    ResponseEntity<Object> addUser(UserDto userDto);
     List<UserDto> addUsers(List<UserDto> userDtos);
     UserDto getUser(Long userId);
     List<UserDto> getUsers();

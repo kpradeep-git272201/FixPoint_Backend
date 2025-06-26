@@ -18,5 +18,5 @@ public class UserDto {
     private String designation;
     private String email;
     private char isActive;
-    private Set<Long> roleIds;
+    private Set<String> roleIds;
 }

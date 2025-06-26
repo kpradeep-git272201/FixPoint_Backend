@@ -37,6 +37,6 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id")
     )
     @Column(name = "role_id")
-    private Set<Long> roleIds;
+    private Set<String> roleIds;
 
 }
