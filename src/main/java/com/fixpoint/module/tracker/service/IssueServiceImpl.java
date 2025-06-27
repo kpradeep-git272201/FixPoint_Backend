@@ -6,10 +6,14 @@ import com.fixpoint.module.tracker.entity.Issue;
 import com.fixpoint.module.tracker.repository.IssueRepository;
 import com.fixpoint.module.user.exceptions.ResouceNotFoundException;
 import com.fixpoint.utils.CustomObjectMapper;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Base64;
@@ -156,6 +160,54 @@ public class IssueServiceImpl implements  IssueService{
                     .attachmentBase64(base64Attachment)
                     .build();
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public byte[] generateIssuesDocx() throws IOException {
+        List<Issue> issues = issueRepository.findAll();
+        List<IssueResponseDTO> collect = issues.stream().map(issue -> {
+            String base64Attachment = null;
+            if (issue.getAttachment() != null && issue.getAttachment().length > 0) {
+                base64Attachment = Base64.getEncoder().encodeToString(issue.getAttachment());
+            }
+            return IssueResponseDTO.builder()
+                    .id(issue.getId())
+                    .assignTo(issue.getAssignTo())
+                    .createdBy(issue.getCreatedBy())
+                    .createdDate(issue.getCreatedDate())
+                    .description(issue.getDescription())
+                    .endDate(issue.getEndDate())
+                    .projectCode(issue.getProjectCode())
+                    .remarks(issue.getRemarks())
+                    .requester(issue.getRequester())
+                    .startDate(issue.getStartDate())
+                    .status(issue.getStatus())
+                    .title(issue.getTitle())
+                    .type(issue.getType())
+                    .updatedBy(issue.getUpdatedBy())
+                    .updatedDate(issue.getUpdatedDate())
+                    .attachmentBase64(base64Attachment)
+                    .build();
+        }).collect(Collectors.toList());
+        XWPFDocument document = new XWPFDocument();
+
+        XWPFParagraph title = document.createParagraph();
+        XWPFRun run = title.createRun();
+        run.setText("List of Issues");
+        run.setBold(true);
+        run.setFontSize(16);
+
+        for (IssueResponseDTO issue : collect) {
+            XWPFParagraph para = document.createParagraph();
+            XWPFRun runPara = para.createRun();
+            runPara.setText("Title: " + issue.getTitle() + ", Project Code: " + issue.getProjectCode());
+        }
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        document.write(out);
+        document.close();
+
+        return out.toByteArray();
     }
 
 }

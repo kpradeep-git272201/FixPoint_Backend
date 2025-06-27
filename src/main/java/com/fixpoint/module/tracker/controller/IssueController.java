@@ -1,16 +1,11 @@
 package com.fixpoint.module.tracker.controller;
-
+import org.springframework.http.*;
 import com.fixpoint.module.tracker.dtos.IssueDTO;
 import com.fixpoint.module.tracker.dtos.IssueResponseDTO;
-import com.fixpoint.module.tracker.entity.Issue;
 import com.fixpoint.module.tracker.service.IssueService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -75,5 +70,15 @@ public class IssueController {
     @GetMapping("/test")
     public String getTest(){
         return "I am running";
+    }
+
+
+    @GetMapping("/download-doc")
+    public ResponseEntity<Object> downloadIssuesDoc() throws IOException {
+        byte[] docxBytes = issueService.generateIssuesDocx();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDisposition(ContentDisposition.attachment().filename("issues.docx").build());
+        return new ResponseEntity<>(docxBytes, headers, HttpStatus.OK);
     }
 }
