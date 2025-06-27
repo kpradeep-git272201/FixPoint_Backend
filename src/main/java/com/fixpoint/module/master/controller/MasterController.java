@@ -53,13 +53,10 @@ public class MasterController {
         List<UserRolesDtos> userRoles = userRoleService.getUserRoles();
         return new ResponseEntity<>(userRoles, HttpStatus.OK);
     }
-<<<<<<< HEAD
 
     @GetMapping("/designation")
     public ResponseEntity<Object> getDesignation(){
         List<DesignationDto> designation = designationService.getDesignation();
         return new ResponseEntity<>(designation, HttpStatus.OK);
     }
-=======
->>>>>>> origin/main
 }
