@@ -1,16 +1,12 @@
 package com.fixpoint.module.master.controller;
 
-<<<<<<< HEAD
 import com.fixpoint.module.master.Dtos.DesignationDto;
 import com.fixpoint.module.master.Dtos.IssueStatusDtos;
 import com.fixpoint.module.master.Dtos.IssueTypeDtos;
 import com.fixpoint.module.master.Dtos.UserRolesDtos;
 import com.fixpoint.module.master.service.DesignationService;
-=======
-import com.fixpoint.module.master.Dtos.IssueStatusDtos;
-import com.fixpoint.module.master.Dtos.IssueTypeDtos;
-import com.fixpoint.module.master.Dtos.UserRolesDtos;
->>>>>>> origin/main
+
+
 import com.fixpoint.module.master.service.IssueStatusService;
 import com.fixpoint.module.master.service.IssueTypeService;
 import com.fixpoint.module.master.service.UserRoleService;
