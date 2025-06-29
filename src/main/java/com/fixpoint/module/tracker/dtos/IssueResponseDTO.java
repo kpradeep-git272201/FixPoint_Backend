@@ -3,6 +3,7 @@ package com.fixpoint.module.tracker.dtos;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -29,8 +30,8 @@ public class IssueResponseDTO {
     private String remarks;
 
     private String createdBy;
-    private Date createdDate;
-    private Date updatedDate;
+    private LocalDateTime createdDate;
+    private LocalDateTime updatedDate;
     private String updatedBy;
 
     private String attachmentBase64;

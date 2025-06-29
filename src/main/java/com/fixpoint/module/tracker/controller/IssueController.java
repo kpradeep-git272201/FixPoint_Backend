@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/issues")
@@ -37,15 +38,22 @@ public class IssueController {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
+    @GetMapping("/statusCount")
+    public ResponseEntity<Object> getIssueByStatus() {
+        Map<String, Long> isueByStatus = issueService.getIsueByStatus();
+        return new ResponseEntity<>(isueByStatus, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<IssueDTO> getIssue(@PathVariable Long id) {
         IssueDTO dto = issueService.getIssueById(id);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<IssueDTO> updateIssue(@PathVariable Long id, @ModelAttribute IssueDTO issueDTO) {
-        IssueDTO updated = issueService.updateIssue(id, issueDTO);
+    @PutMapping(value = "/{id}" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<IssueResponseDTO> updateIssue(@PathVariable Long id, @RequestPart("issue") IssueDTO issueDTO, @RequestPart(value = "attachment", required = false) MultipartFile attachment) {
+        issueDTO.setAttachment(attachment);
+        IssueResponseDTO updated = issueService.updateIssue(id, issueDTO);
         return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 
@@ -75,10 +83,11 @@ public class IssueController {
 
     @GetMapping("/download-doc")
     public ResponseEntity<Object> downloadIssuesDoc() throws IOException {
-        byte[] docxBytes = issueService.generateIssuesDocx();
+        byte[] docx = issueService.generateIssuesDocx();
+        //byte[] docx = mprService.generateMonthlyReport(); // using Apache POI
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        headers.setContentDisposition(ContentDisposition.attachment().filename("issues.docx").build());
-        return new ResponseEntity<>(docxBytes, headers, HttpStatus.OK);
+        headers.setContentDisposition(ContentDisposition.attachment().filename("MPR-June-2025.docx").build());
+        return new ResponseEntity<>(docx, headers, HttpStatus.OK);
     }
 }

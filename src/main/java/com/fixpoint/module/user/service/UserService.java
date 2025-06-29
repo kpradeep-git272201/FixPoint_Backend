@@ -15,4 +15,6 @@ public interface UserService {
     UserDto updateUser(UserDto user, Long userId);
     List<User> deleteMulUser(List<Long> userIds);
     List<User> updateMulUser(List<User> users);
+
+    public User loadUserByUsername(String userName);
 }
