@@ -6,19 +6,21 @@ import com.fixpoint.module.tracker.entity.Issue;
 import com.fixpoint.module.tracker.repository.IssueRepository;
 import com.fixpoint.module.user.exceptions.ResouceNotFoundException;
 import com.fixpoint.utils.CustomObjectMapper;
+import com.fixpoint.utils.DocxExportUtil;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,7 +46,7 @@ public class IssueServiceImpl implements  IssueService{
                 .description(issueDTO.getDescription())
                 .remarks(issueDTO.getRemarks())
                 .createdBy(issueDTO.getCreatedBy())
-                .createdDate(new Date())
+                .createdDate(issueDTO.getCreatedDate())
                 .build();
 
         MultipartFile file = issueDTO.getAttachment();
@@ -72,7 +74,7 @@ public class IssueServiceImpl implements  IssueService{
     }
 
     @Override
-    public IssueDTO updateIssue(Long id, IssueDTO issueDTO) {
+    public IssueResponseDTO updateIssue(Long id, IssueDTO issueDTO) {
         Issue existing = this.issueRepository.findById(id)
                 .orElseThrow(() -> new ResouceNotFoundException("Issue not found with ID: " + id));
 
@@ -116,11 +118,32 @@ public class IssueServiceImpl implements  IssueService{
             }
         }
 
-        existing.setUpdatedDate(new Date());
+        existing.setUpdatedDate(issueDTO.getUpdatedDate());
         existing.setUpdatedBy(issueDTO.getUpdatedBy());
 
-        Issue updated = this.issueRepository.save(existing);
-        return objectMapper.convert(updated, IssueDTO.class);
+        Issue issue = this.issueRepository.save(existing);
+        String base64Attachment = null;
+        if (issue.getAttachment() != null && issue.getAttachment().length > 0) {
+            base64Attachment = Base64.getEncoder().encodeToString(issue.getAttachment());
+        }
+        return IssueResponseDTO.builder()
+                .id(issue.getId())
+                .assignTo(issue.getAssignTo())
+                .createdBy(issue.getCreatedBy())
+                .createdDate(issue.getCreatedDate())
+                .description(issue.getDescription())
+                .endDate(issue.getEndDate())
+                .projectCode(issue.getProjectCode())
+                .remarks(issue.getRemarks())
+                .requester(issue.getRequester())
+                .startDate(issue.getStartDate())
+                .status(issue.getStatus())
+                .title(issue.getTitle())
+                .type(issue.getType())
+                .updatedBy(issue.getUpdatedBy())
+                .updatedDate(issue.getUpdatedDate())
+                .attachmentBase64(base64Attachment)
+                .build();
     }
 
     @Override
@@ -135,7 +158,7 @@ public class IssueServiceImpl implements  IssueService{
 
     @Override
     public List<IssueResponseDTO> getAllIssues() {
-        List<Issue> issues = this.issueRepository.findAll();
+        List<Issue> issues = this.issueRepository.findAll(Sort.by(Sort.Direction.DESC, "updatedDate"));
         return issues.stream().map(issue -> {
             String base64Attachment = null;
             if (issue.getAttachment() != null && issue.getAttachment().length > 0) {
@@ -163,51 +186,34 @@ public class IssueServiceImpl implements  IssueService{
     }
 
     @Override
+    public Map<String, Long> getIsueByStatus() {
+        List<Issue> issues = this.issueRepository.findAll();
+        return issues.stream().collect(Collectors.groupingBy(Issue::getStatus, Collectors.counting()));
+    }
+
+    @Override
     public byte[] generateIssuesDocx() throws IOException {
         List<Issue> issues = issueRepository.findAll();
-        List<IssueResponseDTO> collect = issues.stream().map(issue -> {
-            String base64Attachment = null;
-            if (issue.getAttachment() != null && issue.getAttachment().length > 0) {
-                base64Attachment = Base64.getEncoder().encodeToString(issue.getAttachment());
-            }
-            return IssueResponseDTO.builder()
-                    .id(issue.getId())
-                    .assignTo(issue.getAssignTo())
-                    .createdBy(issue.getCreatedBy())
-                    .createdDate(issue.getCreatedDate())
-                    .description(issue.getDescription())
-                    .endDate(issue.getEndDate())
-                    .projectCode(issue.getProjectCode())
-                    .remarks(issue.getRemarks())
-                    .requester(issue.getRequester())
-                    .startDate(issue.getStartDate())
-                    .status(issue.getStatus())
-                    .title(issue.getTitle())
-                    .type(issue.getType())
-                    .updatedBy(issue.getUpdatedBy())
-                    .updatedDate(issue.getUpdatedDate())
-                    .attachmentBase64(base64Attachment)
-                    .build();
-        }).collect(Collectors.toList());
-        XWPFDocument document = new XWPFDocument();
+        List<IssueResponseDTO> issueList = issues.stream().map(issue -> IssueResponseDTO.builder()
+                .id(issue.getId())
+                .assignTo(issue.getAssignTo())
+                .createdBy(issue.getCreatedBy())
+                .createdDate(issue.getCreatedDate())
+                .description(issue.getDescription())
+                .endDate(issue.getEndDate())
+                .projectCode(issue.getProjectCode())
+                .remarks(issue.getRemarks())
+                .requester(issue.getRequester())
+                .startDate(issue.getStartDate())
+                .status(issue.getStatus())
+                .title(issue.getTitle())
+                .type(issue.getType())
+                .updatedBy(issue.getUpdatedBy())
+                .updatedDate(issue.getUpdatedDate())
+                .build()
+        ).toList();
 
-        XWPFParagraph title = document.createParagraph();
-        XWPFRun run = title.createRun();
-        run.setText("List of Issues");
-        run.setBold(true);
-        run.setFontSize(16);
-
-        for (IssueResponseDTO issue : collect) {
-            XWPFParagraph para = document.createParagraph();
-            XWPFRun runPara = para.createRun();
-            runPara.setText("Title: " + issue.getTitle() + ", Project Code: " + issue.getProjectCode());
-        }
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        document.write(out);
-        document.close();
-
-        return out.toByteArray();
+        return DocxExportUtil.exportMPRDocx(issueList);
     }
 
 }

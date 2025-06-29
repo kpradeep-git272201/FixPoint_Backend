@@ -6,6 +6,7 @@ import com.fixpoint.module.user.entity.User;
 import com.fixpoint.module.user.exceptions.ResouceNotFoundException;
 import com.fixpoint.module.user.repository.UserRepository;
 import com.fixpoint.utils.CustomObjectMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -48,6 +49,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional
     public List<UserDto> getUsers() {
         List<User> allUsers = this.repository.findAll();
         return Arrays.asList(objectMapper.convert(allUsers, UserDto[].class));
@@ -66,20 +68,22 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserDto updateUser(UserDto user, Long userId) {
+    public UserDto updateUser(UserDto userDto, Long userId) {
         Optional<User> byId = this.repository.findById(userId);
-        User user1 = byId.get();
-        if(user.getUserName()!=null){
-            user1.setUserName(user.getUserName());
+        User user = byId.get();
+        if(userDto.getUsername()!=null){
+            user.setUsername(userDto.getUsername());
         }
-        if(user.getEmail()!=null){
-            user1.setEmail(user.getEmail());
+        if(userDto.getEmail()!=null){
+            user.setEmail(userDto.getEmail());
         }
-        if(user.getDesignation()!=null){
-            user1.setDesignation(user.getDesignation());
+        if(userDto.getDesignation()!=null){
+            user.setDesignation(userDto.getDesignation());
         }
-
-        User save = this.repository.save(user1);
+        if(userDto.getRoleIds()!=null){
+            user.setRoleIds(userDto.getRoleIds());
+        }
+        User save = this.repository.save(user);
         return objectMapper.convert(save, UserDto.class);
     }
 
@@ -91,5 +95,10 @@ public class UserServiceImpl implements UserService{
     @Override
     public List<User> updateMulUser(List<User> users) {
         return null;
+    }
+
+    @Override
+    public User loadUserByUsername(String username) {
+        return repository.findByUsername(username);
     }
 }
