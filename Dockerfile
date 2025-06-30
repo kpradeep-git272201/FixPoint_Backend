@@ -1,14 +1,12 @@
-# Base image with Java
-FROM openjdk:17-jdk-slim
-
-# Set working directory inside the container
+# Stage 1: Build with Maven
+FROM maven:3.9.6-eclipse-temurin-17 AS builder
 WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
 
-# Copy jar file into the container
-COPY target/*.jar app.jar
-
-# Expose port 8081 instead of 8080
+# Stage 2: Run the built jar
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
 EXPOSE 8080
-
-# Run the jar file
 ENTRYPOINT ["java", "-jar", "app.jar"]
