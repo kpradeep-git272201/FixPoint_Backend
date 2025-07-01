@@ -81,9 +81,10 @@ public class IssueController {
     }
 
 
-    @GetMapping("/download-doc")
-    public ResponseEntity<Object> downloadIssuesDoc() throws IOException {
-        byte[] docx = issueService.generateIssuesDocx();
+    @PostMapping("/download-doc")
+    public ResponseEntity<Object> downloadIssuesDoc(@RequestBody Map<String, String> data) throws IOException {
+
+        byte[] docx = issueService.generateIssuesDocx(data);
         //byte[] docx = mprService.generateMonthlyReport(); // using Apache POI
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);

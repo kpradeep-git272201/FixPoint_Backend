@@ -3,6 +3,7 @@ package com.fixpoint.module.tracker.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -38,13 +39,11 @@ public class Issue {
     @Column(nullable = false)
     private String type;
 
-    @Temporal(TemporalType.DATE)
     @Column(name = "start_date", nullable = false)
-    private Date startDate;
+    private LocalDate startDate;
 
-    @Temporal(TemporalType.DATE)
     @Column(name = "end_date")
-    private Date endDate;
+    private LocalDate endDate;
 
     @Column(columnDefinition = "TEXT")
     private String description;
@@ -68,7 +67,7 @@ public class Issue {
 
     public Issue(){}
 
-    public Issue(Long id, String projectCode, String title, String requester, String status, String assignTo, byte[] attachment, String type, Date startDate, Date endDate, String description, String remarks, LocalDateTime createdDate, String createdBy, LocalDateTime updatedDate, String updatedBy) {
+    public Issue(Long id, String projectCode, String title, String requester, String status, String assignTo, byte[] attachment, String type, LocalDate startDate, LocalDate endDate, String description, String remarks, LocalDateTime createdDate, String createdBy, LocalDateTime updatedDate, String updatedBy) {
         this.id = id;
         this.projectCode = projectCode;
         this.title = title;
@@ -151,19 +150,19 @@ public class Issue {
         this.type = type;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 
@@ -183,8 +182,6 @@ public class Issue {
         this.remarks = remarks;
     }
 
-
-
     public String getCreatedBy() {
         return createdBy;
     }
@@ -193,12 +190,9 @@ public class Issue {
         this.createdBy = createdBy;
     }
 
-
-
     public void setCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;
     }
-
 
     public LocalDateTime getCreatedDate() {
         return createdDate;

@@ -4,6 +4,7 @@ import com.fixpoint.module.tracker.dtos.IssueDTO;
 import com.fixpoint.module.tracker.dtos.IssueResponseDTO;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -15,5 +16,5 @@ public interface IssueService {
     List<IssueResponseDTO> getAllIssues();
 
     Map<String, Long> getIsueByStatus();
-    byte[] generateIssuesDocx() throws IOException;
+    byte[] generateIssuesDocx(Map<String, String> data) throws IOException;
 }
