@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -41,12 +42,12 @@ public class IssueServiceImpl implements  IssueService{
                 .type(issueDTO.getType())
                 .startDate(issueDTO.getStartDate())
                 .endDate(issueDTO.getEndDate())
-                .updatedDate((issueDTO.getUpdatedDate()))
+                .updatedDate(LocalDateTime.now())
                 .updatedBy(issueDTO.getUpdatedBy())
                 .description(issueDTO.getDescription())
                 .remarks(issueDTO.getRemarks())
                 .createdBy(issueDTO.getCreatedBy())
-                .createdDate(issueDTO.getCreatedDate())
+                .createdDate(LocalDateTime.now())
                 .build();
 
         MultipartFile file = issueDTO.getAttachment();
@@ -118,7 +119,7 @@ public class IssueServiceImpl implements  IssueService{
             }
         }
 
-        existing.setUpdatedDate(issueDTO.getUpdatedDate());
+        existing.setUpdatedDate(LocalDateTime.now());
         existing.setUpdatedBy(issueDTO.getUpdatedBy());
 
         Issue issue = this.issueRepository.save(existing);
@@ -130,7 +131,6 @@ public class IssueServiceImpl implements  IssueService{
                 .id(issue.getId())
                 .assignTo(issue.getAssignTo())
                 .createdBy(issue.getCreatedBy())
-                .createdDate(issue.getCreatedDate())
                 .description(issue.getDescription())
                 .endDate(issue.getEndDate())
                 .projectCode(issue.getProjectCode())
@@ -141,7 +141,6 @@ public class IssueServiceImpl implements  IssueService{
                 .title(issue.getTitle())
                 .type(issue.getType())
                 .updatedBy(issue.getUpdatedBy())
-                .updatedDate(issue.getUpdatedDate())
                 .attachmentBase64(base64Attachment)
                 .build();
     }
@@ -168,7 +167,6 @@ public class IssueServiceImpl implements  IssueService{
                     .id(issue.getId())
                     .assignTo(issue.getAssignTo())
                     .createdBy(issue.getCreatedBy())
-                    .createdDate(issue.getCreatedDate())
                     .description(issue.getDescription())
                     .endDate(issue.getEndDate())
                     .projectCode(issue.getProjectCode())
@@ -179,7 +177,6 @@ public class IssueServiceImpl implements  IssueService{
                     .title(issue.getTitle())
                     .type(issue.getType())
                     .updatedBy(issue.getUpdatedBy())
-                    .updatedDate(issue.getUpdatedDate())
                     .attachmentBase64(base64Attachment)
                     .build();
         }).collect(Collectors.toList());
@@ -198,7 +195,6 @@ public class IssueServiceImpl implements  IssueService{
                 .id(issue.getId())
                 .assignTo(issue.getAssignTo())
                 .createdBy(issue.getCreatedBy())
-                .createdDate(issue.getCreatedDate())
                 .description(issue.getDescription())
                 .endDate(issue.getEndDate())
                 .projectCode(issue.getProjectCode())
@@ -209,7 +205,6 @@ public class IssueServiceImpl implements  IssueService{
                 .title(issue.getTitle())
                 .type(issue.getType())
                 .updatedBy(issue.getUpdatedBy())
-                .updatedDate(issue.getUpdatedDate())
                 .build()
         ).toList();
 

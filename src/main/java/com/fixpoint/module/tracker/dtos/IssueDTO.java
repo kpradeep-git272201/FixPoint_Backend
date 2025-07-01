@@ -1,10 +1,12 @@
 package com.fixpoint.module.tracker.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.Column;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -22,29 +24,23 @@ public class IssueDTO {
         private String assignTo;
         private String type;
 
-        @JsonFormat(pattern = "yyyy-MM-dd")
-        @DateTimeFormat(pattern = "yyyy-MM-dd")
-        private Date startDate;
+        @Column(name = "start_date", nullable = false)
+        private LocalDate startDate;
 
-        @JsonFormat(pattern = "yyyy-MM-dd")
-        @DateTimeFormat(pattern = "yyyy-MM-dd")
-        private Date endDate;
+        @Column(name = "end_date")
+        private LocalDate endDate;
 
         private String description;
         private String remarks;
 
         private String createdBy;
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
-        private LocalDateTime createdDate;
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
-        private LocalDateTime updatedDate;
         private String updatedBy;
 
         private MultipartFile attachment;
 
         public IssueDTO(){}
 
-        public IssueDTO(Long id, String projectCode, String title, String requester, String status, String assignTo, String type, Date startDate, Date endDate, String description, String remarks, String createdBy, LocalDateTime createdDate, LocalDateTime updatedDate, String updatedBy, MultipartFile attachment) {
+        public IssueDTO(Long id, String projectCode, String title, String requester, String status, String assignTo, String type, LocalDate startDate, LocalDate endDate, String description, String remarks, String createdBy, String updatedBy, MultipartFile attachment) {
                 this.id = id;
                 this.projectCode = projectCode;
                 this.title = title;
@@ -57,8 +53,7 @@ public class IssueDTO {
                 this.description = description;
                 this.remarks = remarks;
                 this.createdBy = createdBy;
-                this.createdDate = createdDate;
-                this.updatedDate = updatedDate;
+
                 this.updatedBy = updatedBy;
                 this.attachment = attachment;
         }
@@ -119,19 +114,19 @@ public class IssueDTO {
                 this.type = type;
         }
 
-        public Date getStartDate() {
+        public LocalDate getStartDate() {
                 return startDate;
         }
 
-        public void setStartDate(Date startDate) {
+        public void setStartDate(LocalDate startDate) {
                 this.startDate = startDate;
         }
 
-        public Date getEndDate() {
+        public LocalDate getEndDate() {
                 return endDate;
         }
 
-        public void setEndDate(Date endDate) {
+        public void setEndDate(LocalDate endDate) {
                 this.endDate = endDate;
         }
 
@@ -157,22 +152,6 @@ public class IssueDTO {
 
         public void setCreatedBy(String createdBy) {
                 this.createdBy = createdBy;
-        }
-
-        public LocalDateTime getCreatedDate() {
-                return createdDate;
-        }
-
-        public void setCreatedDate(LocalDateTime createdDate) {
-                this.createdDate = createdDate;
-        }
-
-        public LocalDateTime getUpdatedDate() {
-                return updatedDate;
-        }
-
-        public void setUpdatedDate(LocalDateTime updatedDate) {
-                this.updatedDate = updatedDate;
         }
 
         public String getUpdatedBy() {
