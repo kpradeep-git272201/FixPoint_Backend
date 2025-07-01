@@ -23,9 +23,11 @@ public class IssueDTO {
         private String type;
 
         @JsonFormat(pattern = "yyyy-MM-dd")
+        @DateTimeFormat(pattern = "yyyy-MM-dd")
         private Date startDate;
 
         @JsonFormat(pattern = "yyyy-MM-dd")
+        @DateTimeFormat(pattern = "yyyy-MM-dd")
         private Date endDate;
 
         private String description;

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -29,9 +30,9 @@ public class AuthController {
         Map<String, String> res= new HashMap<>();
         boolean isExist = otpService.generateOtp(toEmail);
         if(isExist){
-            return new ResponseEntity<>(res.put("messaage","Otp generated"), HttpStatus.OK);
+            return new ResponseEntity<>(Objects.requireNonNull(res.put("message", "Otp generated")), HttpStatus.OK);
         }
-        return new ResponseEntity<>(res.put("messaage","Email not exist!"), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(Objects.requireNonNull(res.put("message", "Email not exist!")), HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/verify")
@@ -39,6 +40,29 @@ public class AuthController {
         String email = requestBody.get("email");
         String otp = requestBody.get("otp");
         boolean isValid = otpService.verifyOtp(email, otp);
+
+        if (isValid) {
+            User user = userRepository.findByEmail(email).get();
+            String token = jwtUtil.generateToken(user);
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + token);
+            Map<String, Object> body = Map.of(
+                    "userId", user.getId(),
+                    "username", user.getUsername(),
+                    "email", user.getEmail(),
+                    "roleIds", user.getRoleIds()
+            );
+            return ResponseEntity.ok().headers(headers).body(body);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired OTP.");
+        }
+    }
+
+    @PostMapping("/verifyTpin")
+    public ResponseEntity<Object> loginFixPoint(@RequestBody Map<String, String> requestBody) {
+        String email = requestBody.get("email");
+        String tPin = requestBody.get("tPin");
+        boolean isValid = otpService.verifyTPin(email, tPin);
 
         if (isValid) {
             User user = userRepository.findByEmail(email).get();

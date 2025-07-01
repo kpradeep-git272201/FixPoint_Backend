@@ -69,4 +69,10 @@ public class OtpSerivceImpl implements OtpService {
         boolean otpMatches = latestOtp.getOtp().equals(inputOtp);
         return notExpired && otpMatches;
     }
+
+    @Override
+    public boolean verifyTPin(String email, String tPin) {
+        Optional<User> byUserIdAndEmail = userRepository.findByEmailAndTPin(email, Integer.parseInt(tPin));
+        return byUserIdAndEmail.isPresent();
+    }
 }
