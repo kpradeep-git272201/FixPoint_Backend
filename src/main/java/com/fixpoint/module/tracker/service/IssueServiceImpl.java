@@ -13,16 +13,10 @@ import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -47,12 +41,12 @@ public class IssueServiceImpl implements  IssueService{
                 .type(issueDTO.getType())
                 .startDate(issueDTO.getStartDate())
                 .endDate(issueDTO.getEndDate())
-                .updatedDate(LocalDateTime.now())
+                .updatedDate((issueDTO.getUpdatedDate()))
                 .updatedBy(issueDTO.getUpdatedBy())
                 .description(issueDTO.getDescription())
                 .remarks(issueDTO.getRemarks())
                 .createdBy(issueDTO.getCreatedBy())
-                .createdDate(LocalDateTime.now())
+                .createdDate(issueDTO.getCreatedDate())
                 .build();
 
         MultipartFile file = issueDTO.getAttachment();
@@ -124,7 +118,7 @@ public class IssueServiceImpl implements  IssueService{
             }
         }
 
-        existing.setUpdatedDate(LocalDateTime.now());
+        existing.setUpdatedDate(issueDTO.getUpdatedDate());
         existing.setUpdatedBy(issueDTO.getUpdatedBy());
 
         Issue issue = this.issueRepository.save(existing);
@@ -136,6 +130,7 @@ public class IssueServiceImpl implements  IssueService{
                 .id(issue.getId())
                 .assignTo(issue.getAssignTo())
                 .createdBy(issue.getCreatedBy())
+                .createdDate(issue.getCreatedDate())
                 .description(issue.getDescription())
                 .endDate(issue.getEndDate())
                 .projectCode(issue.getProjectCode())
@@ -146,6 +141,7 @@ public class IssueServiceImpl implements  IssueService{
                 .title(issue.getTitle())
                 .type(issue.getType())
                 .updatedBy(issue.getUpdatedBy())
+                .updatedDate(issue.getUpdatedDate())
                 .attachmentBase64(base64Attachment)
                 .build();
     }
@@ -172,6 +168,7 @@ public class IssueServiceImpl implements  IssueService{
                     .id(issue.getId())
                     .assignTo(issue.getAssignTo())
                     .createdBy(issue.getCreatedBy())
+                    .createdDate(issue.getCreatedDate())
                     .description(issue.getDescription())
                     .endDate(issue.getEndDate())
                     .projectCode(issue.getProjectCode())
@@ -182,6 +179,7 @@ public class IssueServiceImpl implements  IssueService{
                     .title(issue.getTitle())
                     .type(issue.getType())
                     .updatedBy(issue.getUpdatedBy())
+                    .updatedDate(issue.getUpdatedDate())
                     .attachmentBase64(base64Attachment)
                     .build();
         }).collect(Collectors.toList());
@@ -194,17 +192,13 @@ public class IssueServiceImpl implements  IssueService{
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public byte[] generateIssuesDocx(Map<String, String> data) throws IOException {
-        LocalDate startDate = Instant.parse(data.get("startDate"))
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
-
-        List<Issue> issues = issueRepository.findIssuesFromStartDate(startDate);
+    public byte[] generateIssuesDocx() throws IOException {
+        List<Issue> issues = issueRepository.findAll();
         List<IssueResponseDTO> issueList = issues.stream().map(issue -> IssueResponseDTO.builder()
                 .id(issue.getId())
                 .assignTo(issue.getAssignTo())
                 .createdBy(issue.getCreatedBy())
+                .createdDate(issue.getCreatedDate())
                 .description(issue.getDescription())
                 .endDate(issue.getEndDate())
                 .projectCode(issue.getProjectCode())
@@ -215,6 +209,7 @@ public class IssueServiceImpl implements  IssueService{
                 .title(issue.getTitle())
                 .type(issue.getType())
                 .updatedBy(issue.getUpdatedBy())
+                .updatedDate(issue.getUpdatedDate())
                 .build()
         ).toList();
 
