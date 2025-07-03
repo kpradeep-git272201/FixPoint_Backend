@@ -42,7 +42,7 @@ public class User {
     private Set<String> roleIds = new HashSet<>();
 
     @Column(name = "t_pin")
-    private Integer tPin;
+    private Long tPin;
 
     public Long getId() {
         return id;
@@ -92,11 +92,11 @@ public class User {
         this.roleIds = roleIds;
     }
 
-    public Integer gettPin() {
+    public Long gettPin() {
         return tPin;
     }
 
-    public void settPin(Integer tPin) {
+    public void settPin(Long tPin) {
         this.tPin = tPin;
     }
 }

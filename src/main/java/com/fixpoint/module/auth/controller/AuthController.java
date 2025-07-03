@@ -2,8 +2,10 @@ package com.fixpoint.module.auth.controller;
 
 import com.fixpoint.jwt.utils.JwtUtils;
 import com.fixpoint.module.auth.service.OtpService;
+import com.fixpoint.module.user.dto.UserDto;
 import com.fixpoint.module.user.entity.User;
 import com.fixpoint.module.user.repository.UserRepository;
+import com.fixpoint.module.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,8 @@ public class AuthController {
     private JwtUtils jwtUtil;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserService userService;
     @PostMapping("/otp")
     public ResponseEntity<Object> generateOtp(@RequestBody Map<String, String> emailBody){
         String toEmail= emailBody.get("email");
@@ -81,6 +85,11 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/signup")
+    public ResponseEntity<Object> addUser(@RequestBody UserDto userDto){
+        return userService.addUser(userDto);
+
+    }
     @GetMapping("/test")
     public String getTest(){
         return "I am running";
