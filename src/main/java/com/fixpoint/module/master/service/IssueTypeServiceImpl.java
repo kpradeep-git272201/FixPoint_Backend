@@ -21,4 +21,11 @@ public class IssueTypeServiceImpl implements IssueTypeService{
         List<IssueType> issueTypes = issueTypeRepository.findAll();
         return Arrays.asList(objectMapper.convert(issueTypes, IssueTypeDtos[].class));
     }
+
+    @Override
+    public IssueTypeDtos addIssueType(IssueTypeDtos IssueTypeDtos) {
+        IssueType issueType = objectMapper.convert(IssueTypeDtos, IssueType.class);
+        IssueType save = issueTypeRepository.save(issueType);
+        return objectMapper.convert(save, IssueTypeDtos.class);
+    }
 }

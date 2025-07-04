@@ -63,7 +63,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private boolean isProtectedUrl(HttpServletRequest request) {
         String uri = request.getRequestURI();
-        return !uri.startsWith("/fixpoint/api/v1/auth");
+        return !(uri.startsWith("/fixpoint/api/v1/auth") || uri.startsWith("/fixpoint/api/v1/master")) ;
     }
 }
 

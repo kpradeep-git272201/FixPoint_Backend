@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface DesignationService {
     public List<DesignationDto> getDesignation();
+    public DesignationDto addDesignation(DesignationDto DesignationDto);
+
 }

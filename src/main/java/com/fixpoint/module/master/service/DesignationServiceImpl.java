@@ -1,7 +1,9 @@
 package com.fixpoint.module.master.service;
 
 import com.fixpoint.module.master.Dtos.DesignationDto;
+import com.fixpoint.module.master.Dtos.IssueStatusDtos;
 import com.fixpoint.module.master.entities.Designation;
+import com.fixpoint.module.master.entities.IssueStatus;
 import com.fixpoint.module.master.repositories.DesignationRepo;
 import com.fixpoint.utils.CustomObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,5 +22,12 @@ public class DesignationServiceImpl implements DesignationService {
     public List<DesignationDto> getDesignation() {
         List<Designation> designations = designationRepo.findAll();
         return Arrays.asList(objectMapper.convert(designations, DesignationDto[].class));
+    }
+
+    @Override
+    public DesignationDto addDesignation(DesignationDto designationDto) {
+        Designation convert = objectMapper.convert(designationDto, Designation.class);
+        Designation designation = designationRepo.save(convert);
+        return objectMapper.convert(designation, DesignationDto.class);
     }
 }

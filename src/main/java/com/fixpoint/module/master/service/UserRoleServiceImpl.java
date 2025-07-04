@@ -1,6 +1,8 @@
 package com.fixpoint.module.master.service;
 
+import com.fixpoint.module.master.Dtos.DesignationDto;
 import com.fixpoint.module.master.Dtos.UserRolesDtos;
+import com.fixpoint.module.master.entities.Designation;
 import com.fixpoint.module.master.entities.UserRole;
 import com.fixpoint.module.master.repositories.UserRolesRepo;
 import com.fixpoint.utils.CustomObjectMapper;
@@ -19,5 +21,17 @@ public class UserRoleServiceImpl implements UserRoleService {
     public List<UserRolesDtos> getUserRoles() {
         List<UserRole> userRoles = userRoleRepository.findAll();
         return Arrays.asList(objectMapper.convert(userRoles, UserRolesDtos[].class));
+    }
+
+    @Override
+    public UserRolesDtos addUserRoles(UserRolesDtos userRolesDtos) {
+        UserRole convert = objectMapper.convert(userRolesDtos, UserRole.class);
+        UserRole role = userRoleRepository.save(convert);
+        return objectMapper.convert(role, UserRolesDtos.class);
+    }
+
+    @Override
+    public int getAdminCount() {
+        return userRoleRepository.fadminCount();
     }
 }
