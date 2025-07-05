@@ -9,6 +9,7 @@ import com.fixpoint.utils.CustomObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 @Service
@@ -25,8 +26,10 @@ public class UserRoleServiceImpl implements UserRoleService {
 
     @Override
     public UserRolesDtos addUserRoles(UserRolesDtos userRolesDtos) {
-        UserRole convert = objectMapper.convert(userRolesDtos, UserRole.class);
-        UserRole role = userRoleRepository.save(convert);
+        UserRole userRole = objectMapper.convert(userRolesDtos, UserRole.class);
+        userRole.setCreatedDate(LocalDateTime.now());
+        userRole.setUpdatedDate(LocalDateTime.now());
+        UserRole role = userRoleRepository.save(userRole);
         return objectMapper.convert(role, UserRolesDtos.class);
     }
 
