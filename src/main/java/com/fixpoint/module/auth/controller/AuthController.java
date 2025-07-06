@@ -34,7 +34,7 @@ public class AuthController {
         Map<String, String> res= new HashMap<>();
         boolean isExist = otpService.generateOtp(toEmail);
         if(isExist){
-            return new ResponseEntity<>(Objects.requireNonNull(res.put("message", "Otp generated")), HttpStatus.OK);
+            return new ResponseEntity<>(res.put("message", "Otp generated"), HttpStatus.OK);
         }
         return new ResponseEntity<>(Objects.requireNonNull(res.put("message", "Email not exist!")), HttpStatus.NOT_FOUND);
     }

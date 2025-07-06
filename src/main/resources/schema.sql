@@ -109,6 +109,7 @@ CREATE TABLE IF NOT EXISTS tracker.designation (
 -- Safe seed for designation
 INSERT INTO tracker.designation (name, code, description, is_active, created_by, created_date, updated_by, updated_date)
 VALUES
+  ('Software Developer', 'SD', 'Handles development tasks', TRUE, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP),
   ('Software Engineer', 'SE', 'Handles development tasks', TRUE, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP),
   ('Senior Software Developer', 'SSD', 'Handles complex development tasks and mentorship', TRUE, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP),
   ('Tester', 'QA', 'Performs software testing and QA', TRUE, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP),
