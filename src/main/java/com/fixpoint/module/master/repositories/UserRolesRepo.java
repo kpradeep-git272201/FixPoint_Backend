@@ -13,6 +13,6 @@ import java.util.List;
 @Repository
 public interface UserRolesRepo extends JpaRepository<UserRole, Long> {
 
-    @Query(value = "select count(role_code) FROM tracker.user_roles where role_code = 'ROLE_ADMIN'", nativeQuery = true)
+    @Query(value = "select count(*) FROM tracker.users", nativeQuery = true)
     int fadminCount();
 }

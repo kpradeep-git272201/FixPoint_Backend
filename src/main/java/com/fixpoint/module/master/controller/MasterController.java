@@ -80,7 +80,7 @@ public class MasterController {
         if(count>=1){
             response.put("message" , "Admin already created");
             response.put("count", count);
-            return new ResponseEntity<>(response, HttpStatus.CREATED);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }else{
             response.put("message" , "Admin not created");
             response.put("count", count);

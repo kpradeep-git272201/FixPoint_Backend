@@ -218,7 +218,7 @@ public class IssueServiceImpl implements  IssueService{
                 .build()
         ).toList();
 
-        return DocxExportUtil.exportMPRDocx(issueList);
+        return DocxExportUtil.exportMPRDocx(issueList, data);
     }
 
 }

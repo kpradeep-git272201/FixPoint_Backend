@@ -53,6 +53,7 @@ public class AuthController {
             Map<String, Object> body = Map.of(
                     "userId", user.getId(),
                     "username", user.getUsername(),
+                    "designation", user.getDesignation(),
                     "email", user.getEmail(),
                     "roleIds", user.getRoleIds()
             );
@@ -76,6 +77,7 @@ public class AuthController {
             Map<String, Object> body = Map.of(
                     "userId", user.getId(),
                     "username", user.getUsername(),
+                    "designation", user.getDesignation(),
                     "email", user.getEmail(),
                     "roleIds", user.getRoleIds()
             );

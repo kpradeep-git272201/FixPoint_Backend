@@ -6,22 +6,24 @@ import org.apache.poi.xwpf.usermodel.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+
 public class DocxExportUtil {
-    public static byte[] exportMPRDocx(List<IssueResponseDTO> issues) throws IOException {
+    public static byte[] exportMPRDocx(List<IssueResponseDTO> issues, Map<String, String> data) throws IOException {
         XWPFDocument document = new XWPFDocument();
 
         // Heading
         XWPFParagraph title = document.createParagraph();
         title.setAlignment(ParagraphAlignment.CENTER);
         XWPFRun run = title.createRun();
-        run.setText("Monthly Progress Report (MPR) - June 2025");
+        run.setText(data.get("header"));
         run.setBold(true);
         run.setFontSize(16);
 
         // Personal Info
-        addSimpleParagraph(document, "Name: Pradeep Vishwakarma");
-        addSimpleParagraph(document, "BAS ID: 095227");
-        addSimpleParagraph(document, "Designation: Java Developer Level 7, Velocis");
+        addSimpleParagraph(document, data.get("name"));
+        addSimpleParagraph(document, "BAS ID: "+data.get("basId"));
+        addSimpleParagraph(document, data.get("designation")+", "+data.get("vendorName"));
         document.createParagraph(); // spacing
 
         // Table Header
