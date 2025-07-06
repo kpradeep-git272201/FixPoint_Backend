@@ -92,6 +92,6 @@ public class AuthController {
     }
     @GetMapping("/test")
     public String getTest(){
-        return "I am running";
+        return "<h1>I am running, last updated: 07-Jul-2025</h1>";
     }
 }
